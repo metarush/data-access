@@ -1,0 +1,13 @@
+composer.phar
+composer.lock
+phpunit.xml
+phpunit.php
+.phpunit.result.cache
+.env
+error_log
+/vendor/
+/public/
+/resources/docker/
+/resources/todo
+/tests/coverage-html/
+/nbproject/

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.2.0 - 2025-12-08
+
+### Added
+
+- Added support for psr/log v2 and v3.
+
 ## 1.1.0 - 2025-12-07
 
 ### Added

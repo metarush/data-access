@@ -22,7 +22,7 @@
     "require": {
         "php": ">=7.4",
         "atlas/query": "1.*",
-        "psr/log": "1.*"
+        "psr/log": "1.* || 2.* || 3.*"
     },
     "require-dev": {
         "phpstan/phpstan": "2.*",

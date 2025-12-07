@@ -9,35 +9,20 @@ class AtlasQueryAdapterTest extends TestCase
     private $dal;
     private $usersTable;
     private $pdo;
-    private $dbFile;
 
     public function setUp(): void
     {
-        $this->dbFile = __DIR__ . '/test.db';
         $this->usersTable = 'Users';
 
-        $dsn = 'sqlite:' . $this->dbFile;
-
-        // create test db if doesn't exist yet
-        if (!\file_exists($this->dbFile)) {
-
-            $this->pdo = new \PDO($dsn);
-            $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-
-            $this->pdo->query('
-                CREATE TABLE `' . $this->usersTable . '` (
-                `id`        INTEGER PRIMARY KEY AUTOINCREMENT,
-                `firstName`	TEXT,
-                `lastName`	TEXT,
-                `age`       INTEGER
-            )');
-        }
+        $dsn = 'sqlite::memory:';
 
         $tablesDefinition = [
             'Users' => [
                 'id', 'firstName', 'lastName', 'age'
             ]
         ];
+
+        // ------------------------------------------------
 
         $this->cfg = (new DataAccess\Config)
             ->setDsn($dsn)
@@ -49,6 +34,18 @@ class AtlasQueryAdapterTest extends TestCase
         $adapter = new DataAccess\Adapters\AtlasQuery($this->cfg);
         $this->dal = new DataAccess\DataAccess($adapter);
 
+        // ------------------------------------------------
+
+        $this->dal->query('
+                CREATE TABLE `' . $this->usersTable . '` (
+                `id`        INTEGER PRIMARY KEY AUTOINCREMENT,
+                `firstName`	TEXT,
+                `lastName`	TEXT,
+                `age`       INTEGER
+            )');
+
+        // ------------------------------------------------
+
         $this->seedTestData();
     }
 
@@ -57,9 +54,6 @@ class AtlasQueryAdapterTest extends TestCase
         // close the DB connections so unlink will work
         unset($this->dal);
         unset($this->pdo);
-
-        if (file_exists($this->dbFile))
-            \unlink($this->dbFile);
     }
 
     public function seedTestData()

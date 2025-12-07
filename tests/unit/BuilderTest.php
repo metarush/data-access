@@ -25,6 +25,18 @@ class BuilderTest extends TestCase
         $this->assertInstanceOf(DataAccess\DataAccess::class, $dal);
     }
 
+    public function testBuilderWithPdo()
+    {
+        $pdo = new \PDO('sqlite::memory:');
+
+        $builder = (new DataAccess\Builder)
+            ->setPdo($pdo);
+
+        $dal = $builder->build();
+
+        $this->assertInstanceOf(DataAccess\DataAccess::class, $dal);
+    }
+
     public function tearDown(): void
     {
         if (\file_exists($this->dbFile))

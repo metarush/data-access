@@ -23,8 +23,14 @@ $builder = (new \MetaRush\DataAccess\Builder)
     ->setDbUser('foo')
     ->setDbPass('bar');
 
+// or just
+
+    ->setPdo($your_own_pdo);
+
 $dal = $builder->build();
 ```
+
+Note: `setPdo()` when used overrides `setDsn()`, `setDbUser()`, and `setDbPass()`.
 
 ### Create new row
 
@@ -237,4 +243,4 @@ Get last insert id.
 
 ## Current adapters
 
-- PDO (via Atlas.Query)W
+- PDO (via Atlas.Query)

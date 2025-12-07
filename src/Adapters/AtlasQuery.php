@@ -12,18 +12,24 @@ use Atlas\Query\Delete;
 class AtlasQuery implements AdapterInterface
 {
     private Config $cfg;
-    private \PDO $pdo;
+    private ?\PDO $pdo;
     private ?string $groupByColumn = null;
 
-    public function __construct(Config $cfg)
+    public function __construct(Config $cfg, ?\PDO $pdo = null)
     {
         $this->cfg = $cfg;
 
-        try {
-            $this->pdo = new \PDO($cfg->getDsn(), $cfg->getDbUser(), $cfg->getDbPass());
-            $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (\PDOException $ex) { // catch to suppress potential password leak from PDO strack trace
-            throw new \PDOException($ex->getMessage(), $ex->getCode()); // note: using "throw $ex" is glitchy, better to use "throw new"
+        $this->pdo = $pdo;
+
+        if (!$pdo) {
+
+            try {
+                $this->pdo = new \PDO($cfg->getDsn(), $cfg->getDbUser(), $cfg->getDbPass());
+                $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            } catch (\PDOException $ex) { // catch to suppress potential password leak from PDO strack trace
+                throw new \PDOException($ex->getMessage(), $ex->getCode()); // note: using "throw $ex" is glitchy, better to use "throw new"
+            }
+
         }
     }
 
@@ -64,7 +70,6 @@ class AtlasQuery implements AdapterInterface
 
         /** @var Select $select */
         // we don't use method chaining for phpstan
-
         $select = Select::new($this->pdo);
 
         $select->columns('*');

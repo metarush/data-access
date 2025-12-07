@@ -11,6 +11,7 @@ class Config
     private string $dsn;
     private ?string $dbUser = null;
     private ?string $dbPass = null;
+    private ?\PDO $pdo = null;
     private bool $stripMissingColumns = false;
     private LoggerInterface $logger;
 
@@ -113,5 +114,17 @@ class Config
         $this->logger ??= new NullLogger();
 
         return $this->logger;
+    }
+
+    public function getPdo(): ?\PDO
+    {
+        return $this->pdo;
+    }
+
+    public function setPdo(\PDO $pdo): self
+    {
+        $this->pdo = $pdo;
+
+        return $this;
     }
 }

@@ -11,7 +11,7 @@ class Builder extends Config
 
         // comment is for phpstan
         /** @var \MetaRush\DataAccess\Adapters\AdapterInterface $adapter  */
-        $adapter = new $adapter($this);
+        $adapter = new $adapter($this, $this->getPdo());
 
         return new DataAccess($adapter);
     }

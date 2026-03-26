@@ -8,7 +8,6 @@ class AtlasQueryAdapterTest extends TestCase
     private $cfg;
     private $dal;
     private $usersTable;
-    private $pdo;
 
     public function setUp(): void
     {
@@ -36,6 +35,8 @@ class AtlasQueryAdapterTest extends TestCase
 
         // ------------------------------------------------
 
+        $this->dal->query('DROP TABLE IF EXISTS `' . $this->usersTable . '`');
+
         $this->dal->query('
                 CREATE TABLE `' . $this->usersTable . '` (
                 `id`        INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,13 +48,6 @@ class AtlasQueryAdapterTest extends TestCase
         // ------------------------------------------------
 
         $this->seedTestData();
-    }
-
-    public function tearDown(): void
-    {
-        // close the DB connections so unlink will work
-        unset($this->dal);
-        unset($this->pdo);
     }
 
     public function seedTestData()

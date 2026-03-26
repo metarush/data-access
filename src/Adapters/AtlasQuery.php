@@ -14,22 +14,35 @@ class AtlasQuery implements AdapterInterface
     private Config $cfg;
     private ?\PDO $pdo;
     private ?string $groupByColumn = null;
+    private static ?\PDO $sharedPdo = null;
 
     public function __construct(Config $cfg, ?\PDO $pdo = null)
     {
         $this->cfg = $cfg;
 
-        $this->pdo = $pdo;
+        // Use injected PDO if provided
+        if ($pdo !== null) {
+            $this->pdo = $pdo;
+            return;
+        }
 
-        if (!$pdo) {
+        // Use shared PDO if it already exists
+        if (self::$sharedPdo !== null) {
+            $this->pdo = self::$sharedPdo;
+            return;
+        }
 
-            try {
-                $this->pdo = new \PDO($cfg->getDsn(), $cfg->getDbUser(), $cfg->getDbPass());
-                $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            } catch (\PDOException $ex) { // catch to suppress potential password leak from PDO strack trace
-                throw new \PDOException($ex->getMessage(), $ex->getCode()); // note: using "throw $ex" is glitchy, better to use "throw new"
-            }
+        // Otherwise, create PDO and save it in static property
+        try {
+            self::$sharedPdo = new \PDO($cfg->getDsn(), $cfg->getDbUser(), $cfg->getDbPass());
+            self::$sharedPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->pdo = self::$sharedPdo;
 
+            // @codeCoverageIgnoreStart
+        } catch (\PDOException $ex) {
+            // suppress potential password leak
+            throw new \PDOException($ex->getMessage(), $ex->getCode());
+            // @codeCoverageIgnoreEnd
         }
     }
 

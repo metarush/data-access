@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.0.0 - 2026-03-27
+
+### Changed
+
+- AtlasQuery::__construct() now accepts an optional PDO instance for dependency injection.
+- If no PDO is provided, a PDO is auto-created and reused internally (singleton) for subsequent instances.
+
 ## 1.2.0 - 2025-12-08
 
 ### Added
